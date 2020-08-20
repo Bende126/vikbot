@@ -17,11 +17,11 @@ bounds = {}
 class viknews(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.loops.start()
         
     @commands.Cog.listener()
     async def on_ready(self):
         print('vik.bme.hu is ready')
+        self.loops.start()
         
     @commands.command(brief = 'Default cogtest')
     async def viknews_test(self, ctx):
@@ -67,11 +67,6 @@ class viknews(commands.Cog):
         else:
             for x in bounds.values():
                 await x.send(embed=embed)
-
-    @loops.before_loop
-    async def before_loops(self):
-        print('waiting...')
-        await self.bot.wait_until_ready()
 
     @commands.command(brief = 'Hírek lekérése a vik.bme.huról.')
     async def viknews(self, ctx):
