@@ -1,8 +1,12 @@
 import discord 
 from discord.ext import commands, tasks
 import time, os
+from itertools import cycle
 
 client = commands.Bot(command_prefix = '!', status = discord.Status.idle, activity=discord.Game(name="Booting.."))
+status = cycle(['Rossz csatorna', 'E M B E R', 'Literálisan cringe'])
+ #botspam, admin botspam
+channelids =[739567794533826616, 745624827368570930]
 
 @client.event
 async def on_ready():
@@ -19,7 +23,13 @@ for filename in os.listdir('./cogs'):
 
 @client.event
 async def on_message(message):
-    await client.process_commands(message)
+    if message.author == client.user:
+        return
+    else:
+        if message.channel.id in channelids:
+            await client.process_commands(message)
+        else:
+            await message.author.send(next(status))
 
 @client.command(brief='Betölti az összes cogot.')
 async def loadall(ctx):
@@ -51,8 +61,8 @@ async def kys(ctx):
         await ctx.channel.send("Going back to vietnam")
         await client.logout()
         exit()
-    else: await ctx.channel.send("You jerk!")
+    else: await ctx.channel.send("Te nem sorozhatsz be! :stuck_out_tongue_closed_eyes: ")
 
-client.run("")
+client.run("NzQxMDAwMDA0MTcyNTEzMzEw.XyxMCA.kMI350I2ql71nVT3W14L7j_MUzw")
 
 
