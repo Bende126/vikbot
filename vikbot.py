@@ -28,7 +28,7 @@ async def on_message(message):
     else:
         if message.channel.id in channelids:
             await client.process_commands(message)
-        else:
+        elif message.content[0] == "!":
             await message.author.send(next(status))
 
 @client.command(brief='Betölti az összes cogot.')
@@ -61,7 +61,8 @@ async def kys(ctx):
         await ctx.channel.send("Going back to vietnam")
         await client.logout()
         exit()
-    else: await ctx.channel.send("Te nem sorozhatsz be! :stuck_out_tongue_closed_eyes: ")
+    else:
+        await ctx.channel.send("Te nem sorozhatsz be! :stuck_out_tongue_closed_eyes:")
 
 client.run("")
 
