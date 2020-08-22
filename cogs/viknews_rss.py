@@ -1,3 +1,4 @@
+import re
 import os
 import discord
 import feedparser
@@ -33,7 +34,7 @@ class viknews_by_BoA(commands.Cog):
         print('vik.bme.hu is ready')
         self.loops.start()
         
-    @tasks.loop(seconds=60) #todo
+    @tasks.loop(seconds=60)
     async def loops(self):
         print('loop')
         global sources
@@ -73,10 +74,11 @@ def setup(client):
     client.add_cog(viknews_by_BoA(client))
 
 def get_news(url):
+    clean = re.compile('<.*?>')
     news = []
     feed = feedparser.parse(url)
     for news_item in feed['entries']:
-        news.append(News(news_item.title, news_item.published, news_item.link, news_item.summary))
+        news.append(News(news_item.title, news_item.published, news_item.link, re.sub(clean, '', news_item.summary)))
     return news
 
 def seen_news(news_list, source):
