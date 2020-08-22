@@ -17,7 +17,7 @@ class News:
   date: {}
   url: {}
   descr: {}
-}}'''.format(self.title, self.date, self.url, self.descr)
+}}'''.format(self.title, self.date[:-9], self.url, self.descr)
 
     def __repr__(self):
         return str(self)
@@ -54,7 +54,7 @@ class viknews_by_BoA(commands.Cog):
             colour = discord.Colour.blue()
             )
         embed.add_field(name='Leírás: ', value=news_list[0].descr, inline=True)
-        embed.set_footer(text=news_list[0].date)
+        embed.set_footer(text=news_list[0].date[:-9])
         await ctx.channel.send(embed=embed)
 
     @commands.command(brief = 'Hírek lekérése a vik.bme.huról.')
@@ -67,7 +67,7 @@ class viknews_by_BoA(commands.Cog):
             colour = discord.Colour.blue()
             )
         embed.add_field(name='Leírás: ', value=news_list[0].descr, inline=True)
-        embed.set_footer(text=news_list[0].date)
+        embed.set_footer(text=news_list[0].date[:-9])
         await ctx.channel.send(embed=embed)
 
 def setup(client):
