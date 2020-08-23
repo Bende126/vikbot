@@ -1,3 +1,4 @@
+import re
 import os
 import discord
 import feedparser
@@ -16,7 +17,7 @@ class News:
   date: {}
   url: {}
   descr: {}
-}}'''.format(self.title, self.date, self.url, self.descr)
+}}'''.format(self.title, self.date[:-9], self.url, self.descr)
 
     def __repr__(self):
         return str(self)
@@ -33,7 +34,7 @@ class viknews_by_BoA(commands.Cog):
         print('vik.bme.hu is ready')
         self.loops.start()
         
-    @tasks.loop(seconds=60) #todo
+    @tasks.loop(seconds=60)
     async def loops(self):
         print('loop')
         global sources
@@ -53,7 +54,7 @@ class viknews_by_BoA(commands.Cog):
             colour = discord.Colour.blue()
             )
         embed.add_field(name='Leírás: ', value=news_list[0].descr, inline=True)
-        embed.set_footer(text=news_list[0].date)
+        embed.set_footer(text=news_list[0].date[:-9])
         await ctx.channel.send(embed=embed)
 
     @commands.command(brief = 'Hírek lekérése a vik.bme.huról.')
@@ -66,17 +67,18 @@ class viknews_by_BoA(commands.Cog):
             colour = discord.Colour.blue()
             )
         embed.add_field(name='Leírás: ', value=news_list[0].descr, inline=True)
-        embed.set_footer(text=news_list[0].date)
+        embed.set_footer(text=news_list[0].date[:-9])
         await ctx.channel.send(embed=embed)
 
 def setup(client):
     client.add_cog(viknews_by_BoA(client))
 
 def get_news(url):
+    clean = re.compile('<.*?>')
     news = []
     feed = feedparser.parse(url)
     for news_item in feed['entries']:
-        news.append(News(news_item.title, news_item.published, news_item.link, news_item.summary))
+        news.append(News(news_item.title, news_item.published, news_item.link, re.sub(clean, '', news_item.summary)))
     return news
 
 def seen_news(news_list, source):
