@@ -3,6 +3,8 @@ import os
 import discord
 import feedparser
 from discord.ext import commands, tasks
+from discord import Webhook, RequestsWebhookAdapter
+import requests
 
 class News:
     def __init__(self, title, date, url, descr):
@@ -22,6 +24,7 @@ class News:
     def __repr__(self):
         return str(self)
 
+webhook = Webhook.partial(746977029915672577, 'opmSHHFZhNiCBKpic1K-Y9ucm4r711QGDcP2jSGA4SibThHbWcj7uagus5Xl3Mh9Nmnw', adapter=RequestsWebhookAdapter())
 
 sources = {'vik': 'https://vik.bme.hu/rss/', 'kth': 'https://kth.bme.hu/rss/'}
 
@@ -34,7 +37,7 @@ class viknews_by_BoA(commands.Cog):
         print('vik.bme.hu is ready')
         self.loops.start()
         
-    @tasks.loop(seconds=60)
+    @tasks.loop(seconds=10)
     async def loops(self):
         print('loop')
         global sources
@@ -42,7 +45,16 @@ class viknews_by_BoA(commands.Cog):
             news_list = get_news(sources[source])
             for news in get_unseen(news_list, source):
                 print(news)
-            seen_news(news_list, source)
+                seen_news(news_list, source)
+                embed = discord.Embed(
+                    title = news_list[0].title,
+                    url = news_list[0].url,
+                    colour = discord.Colour.blue()
+                    )
+                embed.add_field(name='Leírás: ', value=news_list[0].descr, inline=True)
+                embed.set_thumbnail(url= self.client.user.avatar_url)
+                embed.set_footer(text=news_list[0].date[:-9])
+                webhook.send(embed=embed, username ='xd')
 
     @commands.command(brief = 'Hírek lekérése a vik.bme.huról.')
     async def viknews(self, ctx):
@@ -54,6 +66,7 @@ class viknews_by_BoA(commands.Cog):
             colour = discord.Colour.blue()
             )
         embed.add_field(name='Leírás: ', value=news_list[0].descr, inline=True)
+        embed.set_thumbnail(url= self.client.user.avatar_url)
         embed.set_footer(text=news_list[0].date[:-9])
         await ctx.channel.send(embed=embed)
 
@@ -67,6 +80,7 @@ class viknews_by_BoA(commands.Cog):
             colour = discord.Colour.blue()
             )
         embed.add_field(name='Leírás: ', value=news_list[0].descr, inline=True)
+        embed.set_thumbnail(url= self.client.user.avatar_url)
         embed.set_footer(text=news_list[0].date[:-9])
         await ctx.channel.send(embed=embed)
 
