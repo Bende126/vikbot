@@ -125,5 +125,5 @@ async def list(ctx):
         msg = msg+ msgs+ x+'] '
     await ctx.channel.send(f'```{msg}```')
 
-client.run("Nzk5NzMyMDcwNzIwMjA4OTE2.YAH2hw.wZehQwihOpgZBK61OCl1syPNThI")
+client.run("")
 
