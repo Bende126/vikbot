@@ -28,7 +28,8 @@ class reaction_roles(commands.Cog):
         return
 
     def read_file(self, path):
-        return open(path, "r")
+        with open(path, "r") as fp:
+            return fp.read()
         
     def write_file(self, path, content):
        f = open(path, "w")
@@ -191,8 +192,7 @@ class reaction_roles(commands.Cog):
         embed.set_thumbnail(url= self.client.user.avatar_url)
         
         for x in files:
-            thisdict = json.loads(self.read_file(f"server_roles\{ctx.guild.id}\links\{x}"))
-            f.close()
+            thisdict = json.loads((self.read_file(f"server_roles\{ctx.guild.id}\links\{x}")))
             for emoji in emojis:
                 if(emoji.id == thisdict["emoji_id"]):
                     addedemoji = emoji
