@@ -11,38 +11,30 @@ class reaction_roles(commands.Cog):
         
     @commands.Cog.listener()
     async def on_ready(self):
-        print('idegeschítősch is ready')
+        print('reactionrole is ready')
 
     @commands.command()
     async def testcog_rr(self, ctx):
         await ctx.send("Cog is ready")
-   
-    async def give_role(self, member, guild, emoji):
-        """
-        roles = await guild.fetch_roles()
-        for emotikon in msg.reactions:
-            for szerep in roles:
-                if(emotikon.name == szerep.name):
-                    await member.add_roles(szerep)
-        """
-        roles = await guild.fetch_roles()
-        if emoji.name == "BSS":
-            for x in roles:
-                if(x.name == emoji.name):
-                    addedrole = x
-            await member.add_roles(addedrole)
-        
-        elif emoji.name =="SEM":
-            for x in roles:
-                if(x.name == emoji.name):
-                    addedrole = x
-            await member.add_roles(addedrole)
 
-        elif emoji.name == "AC":
-            for x in roles:
-                if(x.name == emoji.name):
-                    addedrole = x
-            await member.add_roles(addedrole)
+    def check_file(self, path):
+        return os.path.isfile(path)
+
+    def create_file(self, path):
+        isfile = os.path.isfile(path)
+        if(isfile != True):
+            f = open(path, "x")
+            f.close()
+        return
+
+    def read_file(self, path):
+        return open(path, "r")
+        
+    def write_file(self, path, content):
+       f = open(path, "w")
+       json.dump(content, f)
+       f.close()
+       return
 
     async def loading(self, channel, msg, delay):
         message = await channel.send(f"{msg} **[**                  **]**")
@@ -54,45 +46,35 @@ class reaction_roles(commands.Cog):
         await message.edit(content = f"{msg} **[**:white_medium_small_square::white_medium_small_square::white_medium_small_square:**]**")
         await asyncio.sleep(delay/2)
         await message.delete(delay = None)
+    
+    async def check_directory(self, guild, channel, path):
+        isdir = os.path.isdir(path)
+        if(isdir != True):
+            os.mkdir(path)
+            await self.loading(channel, f"Creating dictionary directory for guild: {guild.name}", 2)
+        return
 
     async def add_message(self, channel, msg_id, guild, links):
         thislist = []
         thisdict = {}
 
-        isdirectory1 = os.path.isdir(f"server_roles\{guild.id}")
-        if(isdirectory1 != True):
-            os.mkdir(f"server_roles\{guild.id}")
-            message = f"Creating dictionary directory for guild: {guild.name}"
-            await self.loading(channel, message, 3)
+        await self.check_directory(guild, channel, f"server_roles\{guild.id}")
 
-        isdirectory2 = os.path.isdir(f"server_roles\{guild.id}\messages")
-        if(isdirectory2 != True):
-            os.mkdir(f"server_roles\{guild.id}\messages")
-            message = f"Creating messages directory for guild: {guild.name}"
-            await self.loading(channel, message, 4)
+        await self.check_directory(guild, channel, f"server_roles\{guild.id}\messages")
 
-        isfile1 = os.path.isfile(f"server_roles\{guild.id}\messages\{msg_id}.json")
-        if(isfile1 != True):
-            f = open(f"server_roles\{guild.id}\messages\{msg_id}.json", "x")
-            f.close()
+        self.create_file(f"server_roles\{guild.id}\messages\{msg_id}.json")
 
-        isfile2 = os.path.isfile(f"server_roles\{guild.id}\messages.txt")
-        if(isfile2 != True):
-            f = open(f"server_roles\{guild.id}\messages.txt", "x")
-            f.close()
+        self.create_file(f"server_roles\{guild.id}\messages.txt")
 
-        f = open(f"server_roles\{guild.id}\messages.txt", "r")
-        readfile = f.readlines()
+        readfile = self.read_file(f"server_roles\{guild.id}\messages.txt")
+
         for x in readfile:
             thislist.append(int(x[:-1]))
-        f.close()
 
         thisdict["message id"] = msg_id
         thisdict["link integer"] = links
 
-        f = open(f"server_roles\{guild.id}\messages\{msg_id}.json", "w")
-        json.dump(thisdict, f)
-        f.close()
+        self.write_file(f"server_roles\{guild.id}\messages\{msg_id}.json", thisdict)
 
         for x in thislist:
             if(x == msg_id):
@@ -111,36 +93,23 @@ class reaction_roles(commands.Cog):
     async def add_emoji(self, emoji, role, channel, guild):
         thisdict = {}
         oldid = None
-        
-        isdirectory1 = os.path.isdir(f"server_roles\{guild.id}")
-        if(isdirectory1 != True):
-            os.mkdir(f"server_roles\{guild.id}")
-            message = f"Creating dictionary directory for guild: {guild.name}"
-            await self.loading(channel, message, 3)
 
-        isdirectory2 = os.path.isdir(f"server_roles\{guild.id}\links")
-        if(isdirectory2 != True):
-            os.mkdir(f"server_roles\{guild.id}\links")
-            message = f"Creating emoji-role directory for guild: {guild.name}"
-            await self.loading(channel, message, 3)
+        await self.check_directory(guild, channel, f"server_roles\{guild.id}")
 
-        isfile1 = os.path.isfile(f"server_roles\{guild.id}\links\{emoji.id}.json")
-        if(isfile1 != True):
-            f = open(f"server_roles\{guild.id}\links\{emoji.id}.json", "x")
-            f.close()
-            thisdict["ID"] = len(os.listdir(f"server_roles\{guild.id}\links"))
-        else:
-            f = open(f"server_roles\{guild.id}\links\{emoji.id}.json")
-            oldid = json.loads(f.read())
-            thisdict["ID"] = int(oldid["ID"])
-            f.close()
+        await self.check_directory(guild, channel, f"server_roles\{guild.id}\links")
+
+        self.create_file(f"server_roles\{guild.id}\links\{emoji.id}.json")
+
+        thisdict["ID"] = len(os.listdir(f"server_roles\{guild.id}\links"))
+
+        oldid = json.loads(self.read_file(f"server_roles\{guild.id}\links\{emoji.id}.json"))
+        thisdict["ID"] = int(oldid["ID"])
         
         thisdict["emoji_id"] = emoji.id
         thisdict["role_id"] = role.id
 
-        f = open(f"server_roles\{guild.id}\links\{emoji.id}.json", "w")
-        json.dump(thisdict, f)
-        f.close()
+        self.write_file(f"server_roles\{guild.id}\links\{emoji.id}.json", thisdict)
+
         if(oldid == None):
             await channel.send("Emoji-role link succesfully created.")
         else:
@@ -148,40 +117,29 @@ class reaction_roles(commands.Cog):
 
     async def remove_message(self, msg_id, guild, channel):
         thislist = []
-        
-        isfile = os.path.isfile(f"server_roles\{guild.id}\messages.txt")
-        if(isfile != True):
-            await channel.send("This message is not saved as reaction role message")
+
+        if(self.check_file(f"server_roles\{guild.id}\messages.txt") != True):
+            await channel.send(f"There is no dictionary for this guild: {guild.name}")
             return
 
-        f = open(f"server_roles\{guild.id}\messages.txt", "r")
-        readfile = f.readlines()
+        readfile = self.read_file(f"server_roles\{guild.id}\messages.txt")
         for x in readfile:
             thislist.append(int(x[:-1]))
-        f.close()
+
         thislist.remove(msg_id)
         os.remove(f"server_roles\{guild.id}\messages\{msg_id}.json")
+        
         f = open(f"server_roles\{guild.id}\messages.txt", "wt")
         for x in thislist:
             f.write(f"{x}\n")
         f.close()
-        message = "Removing message from dictionary."
-        await self.loading(channel, message, 3)
+
+        await self.loading(channel, "Removing message from dictionary.", 3)
 
     async def remove_emoji(self, emoji, guild, channel):
-        isfile = os.path.isfile(f"server_roles\{guild.id}\links\{emoji.id}.json")
-        if(isfile != True):
+        if(self.check_file(f"server_roles\{guild.id}\links\{emoji.id}.json") != True):
             await channel.send("There is no role linked to this emoji.")
             return
-
-        
-        readfile = json.loads(open(f"server_roles\{guild.id}\links\{emoji.id}.json"))
-
-        files = os.listdir
-
-        for x in files:
-            f = open(f"server_roles\{guild.id}\links\{x}")
-            
 
         os.remove(f"server_roles\{guild.id}\links\{emoji.id}.json")
         await channel.send("Emoji is no longer linked to role.")
@@ -233,8 +191,7 @@ class reaction_roles(commands.Cog):
         embed.set_thumbnail(url= self.client.user.avatar_url)
         
         for x in files:
-            f = open(f"server_roles\{ctx.guild.id}\links\{x}", "r")
-            thisdict = json.loads(f.read())
+            thisdict = json.loads(self.read_file(f"server_roles\{ctx.guild.id}\links\{x}"))
             f.close()
             for emoji in emojis:
                 if(emoji.id == thisdict["emoji_id"]):
