@@ -1,6 +1,5 @@
 import discord
-from discord.ext import commands, tasks
-import json
+from discord.ext import commands
 from datetime import datetime
 
 from discord.ext.commands.errors import NoEntryPointError
