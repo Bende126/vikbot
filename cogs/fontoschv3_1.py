@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands, tasks
-import io
-import aiohttp
 from datetime import datetime, timedelta
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 

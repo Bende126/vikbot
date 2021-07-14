@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands, tasks
 from discord_slash import cog_ext, SlashContext
-import requests
-
 
 class slash_command_support(commands.Cog):
     def __init__(self, client):
