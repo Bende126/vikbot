@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands, tasks
-import requests
+import random, string
 import json, os
 import asyncio
 from datetime import datetime
@@ -32,10 +32,9 @@ class reaction_roles(commands.Cog):
             return fp.read()
         
     def write_file(self, path, content):
-       f = open(path, "w")
-       json.dump(content, f)
-       f.close()
-       return
+        with open(path, "w") as fp:
+            fp.write(content)
+        return
 
     async def loading(self, channel, msg, delay):
         message = await channel.send(f"{msg} **[**                  **]**")
@@ -84,10 +83,9 @@ class reaction_roles(commands.Cog):
                 
         thislist.append(msg_id)
         
-        f = open(f"server_roles\{guild.id}\messages.txt", "wt")
-        for x in thislist:
-            f.write(f"{x}\n")
-        f.close()
+        with open(f"server_roles\{guild.id}\messages.txt", "w") as fp:
+            for x in thislist:
+                fp.write(f"{x}\n")
 
         await channel.send("Message added to the dictionary.")
 
@@ -101,10 +99,11 @@ class reaction_roles(commands.Cog):
 
         self.create_file(f"server_roles\{guild.id}\links\{emoji.id}.json")
 
-        thisdict["ID"] = len(os.listdir(f"server_roles\{guild.id}\links"))
+        thisdict["ID"] = ''.join(random.choice(string.ascii_letters) for i in range(4))
 
-        oldid = json.loads(self.read_file(f"server_roles\{guild.id}\links\{emoji.id}.json"))
-        thisdict["ID"] = int(oldid["ID"])
+        if(self.check_file(f"server_roles\{guild.id}\links\{emoji.id}.json") == True):
+            oldid = json.loads(self.read_file(f"server_roles\{guild.id}\links\{emoji.id}.json"))
+            thisdict["ID"] = (oldid["ID"])
         
         thisdict["emoji_id"] = emoji.id
         thisdict["role_id"] = role.id
@@ -130,10 +129,9 @@ class reaction_roles(commands.Cog):
         thislist.remove(msg_id)
         os.remove(f"server_roles\{guild.id}\messages\{msg_id}.json")
         
-        f = open(f"server_roles\{guild.id}\messages.txt", "wt")
-        for x in thislist:
-            f.write(f"{x}\n")
-        f.close()
+        with open(f"server_roles\{guild.id}\messages.txt", "wt") as fp:
+            for x in thislist:
+                fp.write(f"{x}\n")
 
         await self.loading(channel, "Removing message from dictionary.", 3)
 
