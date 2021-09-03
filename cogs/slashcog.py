@@ -73,7 +73,7 @@ class slash_command_support(commands.Cog):
         #await ctx.edit_origin(content="You pressed a button!")
         for x in self.joblist:
             if x.id == str(ctx.author.name):
-                await ctx.send(f"Még várj ennyi időegységet légyszi: {str(pytz.utc.localize(datetime.now())-(x.next_run_time))}", hidden=True)
+                await ctx.send(f"Még várj ennyi időegységet(másodpercet) légyszi: {str((x.next_run_time)-pytz.utc.localize(datetime.now()))[14:-7]}", hidden=True)
             return
 
         roles = await ctx.guild.fetch_roles()
@@ -90,7 +90,8 @@ class slash_command_support(commands.Cog):
                     await ctx.author.add_roles(x)
         await ctx.send(f"Ezt választottad: {ctx.values[0]}", hidden=True)
         
-        thisjob = self.scheduler.add_job(self.cooldowntimer, run_date=pytz.utc.localize(datetime.now())+timedelta(seconds=20), id=f"{ctx.author.name}", args=[ctx.author.name])
+        thisjob = self.scheduler.add_job(self.cooldowntimer, run_date=(datetime.now())+timedelta(seconds=20), id=f"{ctx.author.name}", args=[ctx.author.name])
+        print(str((datetime.now())+timedelta(seconds=20)))
         self.joblist.append(thisjob)
     
     @commands.Cog.listener()
