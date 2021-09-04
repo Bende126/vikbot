@@ -21,6 +21,7 @@ choice_ev = create_select(
         create_select_option("Évfolyam: 2021", value="Évfolyam: 2021", emoji="🥼"),
         create_select_option("Évfolyam: 2020", value="Évfolyam: 2020", emoji="🧪"),
         create_select_option("Évfolyam: 2019", value="Évfolyam: 2019", emoji="🧫"),
+        create_select_option("Évfolyam: 2018", value="Évfolyam: 2018", emoji="🦠"),
     ],
     placeholder="Évfolyamválasztó", 
     min_values=1, 
