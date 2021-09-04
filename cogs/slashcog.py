@@ -16,16 +16,39 @@ buttons = [
             ),
           ]
 
-select = create_select(
-    options=[# the options in your dropdown
+choice_ev = create_select(
+    options=[
         create_select_option("Évfolyam: 2021", value="Évfolyam: 2021", emoji="🥼"),
         create_select_option("Évfolyam: 2020", value="Évfolyam: 2020", emoji="🧪"),
         create_select_option("Évfolyam: 2019", value="Évfolyam: 2019", emoji="🧫"),
-        create_select_option("Évfolyam: 2018", value="Évfolyam: 2018", emoji="🦠"),
     ],
-    placeholder="Évfolyamválasztó",  # the placeholder text to show when no options have been chosen
-    min_values=1,  # the minimum number of options a user must select
-    max_values=1,  # the maximum number of options a user can select
+    placeholder="Évfolyamválasztó", 
+    min_values=1, 
+    max_values=1, 
+)
+
+choice_ga = create_select(
+    options=[
+        create_select_option("Gárda: Fekete", value="Gárda: Buckalakó", emoji="⚫️"),
+        create_select_option("Gárda: Fehér", value="Gárda: Zacskós túró", emoji="⚪️"),
+        create_select_option("Gárda: Kék", value="Gárda: Vikék", emoji="🔵"),
+        create_select_option("Gárda: Piros", value="Gárda: Tűzvarázsló", emoji="🔴"),
+        create_select_option("Gárda: Sárga", value="Gárda: #FF0", emoji="🟡"),
+    ],
+    placeholder="Gárdaválasztó",  
+    min_values=1,  
+    max_values=1,  
+)
+
+choice_ka = create_select(
+    options=[
+        create_select_option("Szak: Mérnökinfó", value="Szak: Mérnökinfó", emoji="📱"),
+        create_select_option("Szak: Villamosmérnök", value="Szak: Villamosmérnök", emoji="🚊"),
+        create_select_option("Szak: Üzemmérnök", value="Szak: Üzemmérnök", emoji="🕹"),
+    ],
+    placeholder="Szakválasztó", 
+    min_values=1, 
+    max_values=1, 
 )
 
 class slash_command_support(commands.Cog):
@@ -68,26 +91,32 @@ class slash_command_support(commands.Cog):
 
     @commands.Cog.listener()
     async def on_component(self, ctx: ComponentContext):
-        # ctx.selected_options is a list of all the values the user selected
-        #await ctx.send(content=f"You selected {ctx.selected_options}")
-        #await ctx.edit_origin(content="You pressed a button!")
-        for x in self.joblist:
-            if x.id == str(ctx.author.name):
-                await ctx.send(f"Még várj ennyi időegységet(másodpercet) légyszi: {str((x.next_run_time)-pytz.utc.localize(datetime.now()))[14:-7]}", hidden=True)
-            return
-
         roles = await ctx.guild.fetch_roles()
 
         if "Évfolyam: " in ctx.values[0]:
-
             for x in ctx.author.roles:
                 if "Évfolyam: " in str(x.name):
-                    print(x.name)
                     await ctx.author.remove_roles(x)
-
             for x in roles:
                 if str(x.name) == ctx.values[0]:
                     await ctx.author.add_roles(x)
+
+        if "Gárda: " in ctx.values[0]:
+            for x in ctx.author.roles:
+                if "Gárda: " in str(x.name):
+                    await ctx.author.remove_roles(x)
+            for x in roles:
+                if str(x.name) == ctx.values[0]:
+                    await ctx.author.add_roles(x)
+
+        if "Szak: " in ctx.values[0]:
+            for x in ctx.author.roles:
+                if "Szak: " in str(x.name):
+                    await ctx.author.remove_roles(x)
+            for x in roles:
+                if str(x.name) == ctx.values[0]:
+                    await ctx.author.add_roles(x)
+
         await ctx.send(f"Ezt választottad: {ctx.values[0]}", hidden=True)
         
         thisjob = self.scheduler.add_job(self.cooldowntimer, run_date=(datetime.now())+timedelta(seconds=20), id=f"{ctx.author.name}", args=[ctx.author.name])
@@ -106,9 +135,18 @@ class slash_command_support(commands.Cog):
                 await after.add_roles(givenrole)
                 return
 
+
     @commands.command(hidden = True)
-    async def test_row(self, ctx):
-        await ctx.send("Válassz évfolyamot!", components=[create_actionrow(select)])  # like action row with buttons but without * in front of the variable
+    async def ev_row(self, ctx):
+        await ctx.send(content="", components=[create_actionrow(choice_ev)])
+
+    @commands.command(hidden = True)
+    async def ga_row(self, ctx):
+        await ctx.send(content="", components=[create_actionrow(choice_ga)])
+
+    @commands.command(hidden = True)
+    async def ka_row(self, ctx):
+        await ctx.send(content="", components=[create_actionrow(choice_ka)])
     
     @commands.command(hidden = True)
     async def check_roles(self, ctx):
@@ -133,33 +171,8 @@ class slash_command_support(commands.Cog):
                         if str(z.name) == "Generic évfolyam":
                             await ember.add_roles(z)
                             await asyncio.sleep(0.1)
+
         await ctx.send("Done!")
 
-"""
-    @cog_ext.cog_subcommand(base="prefix", name="add", description="todo")
-    async def prefix_add(self, ctx: SlashContext):
-        ctx.send(content="asdfghj", hidden=True)
-
-    @cog_ext.cog_subcommand(base="prefix", name="remove", description="todo")
-    async def prefix_remove(self, ctx: SlashContext):
-        ctx.send(content="asdfghj", hidden=True)
-
-    @cog_ext.cog_subcommand(base="prefix", name="list", description="todo")
-    async def prefix_list(self, ctx: SlashContext):
-        ctx.send(content="asdfghj", hidden=True)
-    
-    @cog_ext.cog_subcommand(base="cog", name="add", description="todo")
-    async def cog_add(self, ctx: SlashContext):
-        ctx.send(content="asdfghj", hidden=True)
-
-    @cog_ext.cog_subcommand(base="cog", name="remove", description="todo")
-    async def cog_remove(self, ctx: SlashContext):
-        ctx.send(content="asdfghj", hidden=True)
-    
-    @cog_ext.cog_subcommand(base="cog", name="list", description="todo")
-    async def cog_list(self, ctx: SlashContext):
-        coglist = "vlami ide"
-        ctx.send(content=coglist, hidden=True)
-"""
 def setup(client):
     client.add_cog(slash_command_support(client))
