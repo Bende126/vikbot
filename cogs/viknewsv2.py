@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands, tasks
 import urllib.request
-from lxml import html
 import time, random, asyncio
 from datetime import date, datetime
 
