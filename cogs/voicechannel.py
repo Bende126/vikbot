@@ -67,7 +67,10 @@ class voicechannel(commands.Cog):
         if(after.channel !=None and str(after.channel.id) in parentids):
             print("joined to parent channel")
 
-            channel = await member.guild.create_voice_channel(f"{member.nick} által kért voice")
+            channelname = member.nick
+            if member.nick == None:
+                channelname = member.name
+            channel = await member.guild.create_voice_channel(f"{channelname} által kért voice")
             await channel.edit(position=after.channel.position+1, category=after.channel.category, sync_permissions=True)
             await channel.set_permissions(member, manage_channels=True)
             await member.move_to(channel)
