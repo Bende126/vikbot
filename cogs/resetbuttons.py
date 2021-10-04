@@ -29,8 +29,18 @@ resetgombok = [
         ),
         create_button(
             style=ButtonStyle.red,
-            label="882337994223280220",
-            custom_id="asdfg"
+            label="Gárda reset",
+            custom_id="882337994223280220"
+        ),
+        create_button(
+            style=ButtonStyle.gray,
+            label=" ",
+            disabled=True
+        ),
+        create_button(
+        style=ButtonStyle.red,
+        label="Géming role reset",
+        custom_id="796698649815285760"
         )
 ]
 
