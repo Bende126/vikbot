@@ -173,6 +173,15 @@ class mcauth(commands.Cog):
     async def testcog_mcauth(self, ctx):
         await ctx.send("Cog is ready")
 
+    @cog_ext.cog_slash(name="token", description="Megmutatja a regisztrált tokent", options=None)
+    async def token_slash(self, ctx: SlashContext):
+        await ctx.defer(hidden=True)
+        tmpdict = load_token()
+        token = tmpdict[str(ctx.author.id)]["token"]
+        dpname = tmpdict[str(ctx.author.id)]["displayname"]
+        await ctx.send(content=f"Token: {token} | Displayname: {dpname}", hidden=True)
+        print("showed token")
+
     @cog_ext.cog_slash(name="mcauth", description="Nem eredetis játékosok ezzel tudnak karaktert regisztrálni", options=auth_options)
     async def mcauth_slash(self, ctx: SlashContext, token, displayname):
         await ctx.defer(hidden=True)
@@ -204,18 +213,6 @@ class mcauth(commands.Cog):
                 print("saved new user")
         else:
             await ctx.send(content="Nem használhatsz online accountot `token`-ként és `displayname`-ként. A `token` és `displayname` nem egyezhet. :triumph:", hidden=True)
-
-    @cog_ext.cog_slash(name="serverstart")
-    async def serverstart_slash(self, ctx: SlashContext):
-        await ctx.defer(hidden=True)
-        #asyncio.run(socketserver())
-        await ctx.send(content="server started",hidden=True)
-        await socketserver()
-        print("server started")
-
-    @cog_ext.cog_slash(name="serverstop")
-    async def serverstop_slash(self, ctx: SlashContext):
-        print("server stoppedf")
 
     @commands.command()
     async def start_server(self, ctx):
