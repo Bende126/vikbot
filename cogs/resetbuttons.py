@@ -31,16 +31,6 @@ resetgombok = [
             style=ButtonStyle.red,
             label="Gárda reset",
             custom_id="882337994223280220"
-        ),
-        create_button(
-            style=ButtonStyle.gray,
-            label=" ",
-            disabled=True
-        ),
-        create_button(
-        style=ButtonStyle.red,
-        label="Géming role reset",
-        custom_id="796698649815285760"
         )
 ]
 
@@ -65,7 +55,7 @@ class resetbuttons(commands.Cog):
         if ctx.component_type == 3:
             return
 
-        roles = await ctx.author.guild.fetch_roles()
+        roles = ctx.author.guild.roles
 
         for x in roles:
             if int(ctx.custom_id) == x.id:

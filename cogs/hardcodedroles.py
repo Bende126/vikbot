@@ -23,7 +23,12 @@ class roleosch(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
-        roles = await after.guild.fetch_roles()
+        if before.guild.id != 737284142462402560:
+            return
+        #roles = await after.guild.fetch_roles()
+        roles = before.guild.roles
+        generic_ev = generic_ga = generic_ka = gm_role = None
+        #print(roles)
         for x in roles:
             if str(x.id) =="882332491363524628":
                 generic_ev = x
@@ -54,12 +59,16 @@ class roleosch(commands.Cog):
         for x in after.roles:
             if "Évfolyam: " in x.name:
                 await after.add_roles(generic_ev)
+                await asyncio.sleep(1)
             elif "Szak: " in x.name:
                 await after.add_roles(generic_ka)
+                await asyncio.sleep(1)
             elif "Gárda: " in x.name:
                 await after.add_roles(generic_ga)
+                await asyncio.sleep(1)
             elif str(x.id) in gm_roles:
                 await after.add_roles(gm_role)
+                await asyncio.sleep(1)
 
     @commands.command()
     async def testcog_roleosch(self, ctx):

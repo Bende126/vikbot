@@ -72,13 +72,13 @@ choice_ka = create_select(
 
 choice_gm = create_select(
     options=[
-        create_select_option(label="Minecraft Doomer", value="740528491367497781", emoji="⛏💎"),
+        create_select_option(label="Minecraft Doomer", value="740528491367497781", emoji="💎"),
         create_select_option(label="CS:GO chad", value="796695732740554764", emoji="🔫"),
-        create_select_option(label="League of Legends salt miner", value="796695564024283156", emoji="🌙🦄🍌"),
-        create_select_option(label="Actual R6:Siege player", value="796696220286058516", emoji="▄︻̷̿┻̿═━一"),
-        create_select_option(label="Valaki Among Us?", value="796696319640993812", emoji="ඞ⚔🍖"),
+        create_select_option(label="League of Legends salt miner", value="796695564024283156", emoji="🦄"),
+        create_select_option(label="Actual R6:Siege player", value="796696220286058516", emoji="🔫"),
+        create_select_option(label="Valaki Among Us?", value="796696319640993812", emoji="🍖"),
         create_select_option(label="Rocket League sportsman", value="894182437897244683", emoji="🏎️🔥"),
-        create_select_option(label="Overwatch abuser", value="894183010759507978", emoji="💉👼"),
+        create_select_option(label="Overwatch abuser", value="894183010759507978", emoji="👼"),
         create_select_option(label="Apex enjoyer", value="894181680875712572", emoji="🔫"),
     ],
     custom_id="gm_select",
