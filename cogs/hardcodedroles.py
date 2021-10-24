@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import discord
 from discord.ext import commands, tasks
 import asyncio
@@ -38,6 +39,10 @@ class roleosch(commands.Cog):
                 generic_ka = x
             elif str(x.id) == "796698649815285760":
                 gm_role = x
+
+        if generic_ev==None or generic_ga==None or generic_ka==None or gm_role ==None:
+            print("failed to load roles")
+            return
 
         if generic_ev in before.roles and generic_ev not in after.roles:
             for x in after.roles:
