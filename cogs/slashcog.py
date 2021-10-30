@@ -128,7 +128,7 @@ class slash_command_support(commands.Cog):
     @commands.Cog.listener()
     async def on_component(self, ctx: ComponentContext):
         await ctx.defer(hidden=True)
-        roles = await ctx.guild.fetch_roles()
+        roles = ctx.author.guild.roles
         member_roles = ctx.author.roles
 
         """if "Évfolyam: " in ctx.values[0]:
